@@ -57,11 +57,11 @@ jobs:
           echo '<plist version="1.0">' >> fastlane/ExportOptions.plist
           echo '<dict>' >> fastlane/ExportOptions.plist
           echo '<key>method</key>' >> fastlane/ExportOptions.plist
-          echo '<string>app-store</string>' >> fastlane/ExportOptions.plist
+          echo '<string>validation</string>' >> fastlane/ExportOptions.plist
           echo '</dict>' >> fastlane/ExportOptions.plist
           echo '</plist>' >> fastlane/ExportOptions.plist
 
-      - name: Export IPA
+      - name: Validate Archive
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: |
           xcodebuild \
@@ -70,11 +70,9 @@ jobs:
             -exportPath build \
             -exportOptionsPlist fastlane/ExportOptions.plist
 
-      - name: Create Release
+      - name: Upload xcarchive
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: softprops/action-gh-release@v1
+        uses: actions/upload-artifact@v4
         with:
-          files: build/TaskCalendar.ipa
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: TaskCalendar-xcarchive
+          path: build/TaskCalendar.xcarchive
