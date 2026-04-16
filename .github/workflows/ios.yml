@@ -41,7 +41,7 @@ jobs:
       - name: Create ExportOptions.plist
         run: |
           mkdir -p fastlane
-          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n\t<key>method</key>\n\t<string>ad-hoc</string>\n\t<key>signingCertificate</key>\n\t<string>-</string>\n\t<key>signingStyle</key>\n\t<string>manual</string>\n\t<key>teamId</key>\n\t<string></string>\n\t<key>allowUnsignedDestination</key>\n\t<true/>\n</dict>\n</plist>\n' > fastlane/ExportOptions.plist
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n\t<key>method</key>\n\t<string>release-testing</string>\n\t<key>signingCertificate</key>\n\t<string>-</string>\n\t<key>signingStyle</key>\n\t<string>manual</string>\n\t<key>teamId</key>\n\t<string></string>\n\t<key>allowUnsignedDestination</key>\n\t<true/>\n</dict>\n</plist>\n' > fastlane/ExportOptions.plist
 
       - name: Build TaskCalendar
         run: |
