@@ -37,42 +37,33 @@ jobs:
         run: |
           xcodegen generate
 
-      - name: Build archive
+      - name: Build
         run: |
           xcodebuild -project ioscompiler.xcodeproj \
             -scheme TaskCalendar \
             -configuration Release \
             -destination generic/platform=iOS \
-            -archivePath build/TaskCalendar.xcarchive \
-            archive \
-            CODE_SIGN_IDENTITY="-" \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM=""
 
-      - name: Create ExportOptions.plist
-        run: |
-          mkdir -p fastlane
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > fastlane/ExportOptions.plist
-          echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> fastlane/ExportOptions.plist
-          echo '<plist version="1.0">' >> fastlane/ExportOptions.plist
-          echo '<dict>' >> fastlane/ExportOptions.plist
-          echo '<key>method</key>' >> fastlane/ExportOptions.plist
-          echo '<string>validation</string>' >> fastlane/ExportOptions.plist
-          echo '</dict>' >> fastlane/ExportOptions.plist
-          echo '</plist>' >> fastlane/ExportOptions.plist
-
-      - name: Validate Archive
+      - name: Create IPA
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: |
-          xcodebuild \
-            -exportArchive \
-            -archivePath build/TaskCalendar.xcarchive \
-            -exportPath build \
-            -exportOptionsPlist fastlane/ExportOptions.plist
+          cd build
+          mkdir -p Payload
+          cp -r Build/Products/Release-iphoneos/TaskCalendar.app Payload/
+          zip -r TaskCalendar.ipa Payload
+          rm -rf Payload
+          ls -la *.ipa
 
-      - name: Upload xcarchive
+      - name: Create Release
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: actions/upload-artifact@v4
+        uses: softprops/action-gh-release@v1
         with:
-          name: TaskCalendar-xcarchive
-          path: build/TaskCalendar.xcarchive
+          files: build/TaskCalendar.ipa
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
