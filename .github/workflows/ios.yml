@@ -27,27 +27,20 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Install XcodeGen
+        run: |
+          which xcodegen || brew install xcodegen
 
       - name: Generate Xcode project
         run: |
-          gem install xcodegen
           xcodegen generate
 
       - name: Create ExportOptions.plist
         run: |
           mkdir -p fastlane
-          echo '<?xml version="1.0" encoding="UTF-8"?>' > fastlane/ExportOptions.plist
-          echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> fastlane/ExportOptions.plist
-          echo '<plist version="1.0">' >> fastlane/ExportOptions.plist
-          echo '<dict>' >> fastlane/ExportOptions.plist
-          echo '	<key>method</key>' >> fastlane/ExportOptions.plist
-          echo '	<string>ad-hoc</string>' >> fastlane/ExportOptions.plist
-          echo '	<key>signingCertificate</key>' >> fastlane/ExportOptions.plist
-          echo '	<string>-</string>' >> fastlane/ExportOptions.plist
-          echo '	<key>signingStyle</key>' >> fastlane/ExportOptions.plist
-          echo '	<string>manual</string>' >> fastlane/ExportOptions.plist
-          echo '</dict>' >> fastlane/ExportOptions.plist
-          echo '</plist>' >> fastlane/ExportOptions.plist
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n\t<key>method</key>\n\t<string>ad-hoc</string>\n\t<key>signingCertificate</key>\n\t<string>-</string>\n\t<key>signingStyle</key>\n\t<string>manual</string>\n</dict>\n</plist>\n' > fastlane/ExportOptions.plist
 
       - name: Build TaskCalendar
         run: |
