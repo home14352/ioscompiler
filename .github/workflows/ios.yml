@@ -57,7 +57,7 @@ jobs:
           echo '<plist version="1.0">' >> fastlane/ExportOptions.plist
           echo '<dict>' >> fastlane/ExportOptions.plist
           echo '<key>method</key>' >> fastlane/ExportOptions.plist
-          echo '<string>developer-id</string>' >> fastlane/ExportOptions.plist
+          echo '<string>app-store</string>' >> fastlane/ExportOptions.plist
           echo '</dict>' >> fastlane/ExportOptions.plist
           echo '</plist>' >> fastlane/ExportOptions.plist
 
