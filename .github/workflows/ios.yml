@@ -1,0 +1,62 @@
+name: iOS CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  LC_ALL: en_US.UTF-8
+  LANG: en_US.UTF-8
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate Xcode project
+        run: |
+          gem install xcodegen
+          xcodegen generate
+
+      - name: Build
+        run: |
+          xcodebuild -project ioscompiler.xcodeproj \
+            -scheme ioscompiler \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/ioscompiler \
+            archive \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Export IPA
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        run: |
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/ioscompiler.xcarchive \
+            -exportPath build \
+            -exportOptionsPlist fastlane/ExportOptions.plist \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/ioscompiler.ipa
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
