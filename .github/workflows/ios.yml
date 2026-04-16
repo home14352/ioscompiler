@@ -60,10 +60,11 @@ jobs:
           ls -la *.ipa
 
       - name: Create Release
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        if: startsWith(github.ref, 'refs/heads/')
         uses: softprops/action-gh-release@v1
         with:
           files: build/TaskCalendar.ipa
           generate_release_notes: true
+          tag_name: ${{ github.run_number }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
