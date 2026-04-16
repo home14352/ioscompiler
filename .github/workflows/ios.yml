@@ -14,6 +14,7 @@ on:
 env:
   LC_ALL: en_US.UTF-8
   LANG: en_US.UTF-8
+  TEAM_ID: ""
 
 jobs:
   build:
@@ -40,7 +41,7 @@ jobs:
       - name: Create ExportOptions.plist
         run: |
           mkdir -p fastlane
-          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n\t<key>method</key>\n\t<string>ad-hoc</string>\n\t<key>signingCertificate</key>\n\t<string>-</string>\n\t<key>signingStyle</key>\n\t<string>manual</string>\n</dict>\n</plist>\n' > fastlane/ExportOptions.plist
+          printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n\t<key>method</key>\n\t<string>ad-hoc</string>\n\t<key>signingCertificate</key>\n\t<string>-</string>\n\t<key>signingStyle</key>\n\t<string>manual</string>\n\t<key>teamId</key>\n\t<string></string>\n\t<key>allowUnsignedDestination</key>\n\t<true/>\n</dict>\n</plist>\n' > fastlane/ExportOptions.plist
 
       - name: Build TaskCalendar
         run: |
@@ -52,7 +53,8 @@ jobs:
             archive \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM=""
 
       - name: Export IPA
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
