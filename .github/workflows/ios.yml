@@ -52,16 +52,14 @@ jobs:
       - name: Create ExportOptions.plist
         run: |
           mkdir -p fastlane
-          cat > fastlane/ExportOptions.plist << 'HEREDOC'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>developer-id</string>
-</dict>
-</plist>
-HEREDOC
+          echo '<?xml version="1.0" encoding="UTF-8"?>' > fastlane/ExportOptions.plist
+          echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> fastlane/ExportOptions.plist
+          echo '<plist version="1.0">' >> fastlane/ExportOptions.plist
+          echo '<dict>' >> fastlane/ExportOptions.plist
+          echo '<key>method</key>' >> fastlane/ExportOptions.plist
+          echo '<string>developer-id</string>' >> fastlane/ExportOptions.plist
+          echo '</dict>' >> fastlane/ExportOptions.plist
+          echo '</plist>' >> fastlane/ExportOptions.plist
 
       - name: Export IPA
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
