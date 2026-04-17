@@ -15,6 +15,8 @@ env:
   LC_ALL: en_US.UTF-8
   LANG: en_US.UTF-8
 
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: macos-latest
